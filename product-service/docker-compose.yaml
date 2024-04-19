@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  database:
+    container_name: pg
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: prod-svc-pg
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+  server:
+    container_name: api
+    image: golang:latest
+    working_dir: /app
+    volumes:
+      - ./api:/app
+    command: go run -mod=vendor cmd/entrypoint/main.go cmd/entrypoint/router.go
+    ports:
+      - "3001:3001"
+    depends_on:
+      - database
+    environment:
+      DB_URL: postgres://postgres:postgres@database:5432/prod-svc-pg?sslmode=disable
+volumes:
+  data:
