@@ -17,6 +17,24 @@ services:
       - "5432:5432"
     volumes:
       - data:/var/lib/postgresql/data
+  migrate:
+    image: migrate/migrate:v4.15.2
+    profiles: [ "tools" ]
+    volumes:
+      - ./api/data/migrations:/migrations
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://postgres:postgres@database:5432/prod-svc-pg?sslmode=disable",
+      ]
+    command: [ "up" ]
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: on-failure
   server:
     container_name: api
     image: golang:latest
