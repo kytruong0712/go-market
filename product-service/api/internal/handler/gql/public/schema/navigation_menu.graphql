@@ -1,0 +1,15 @@
+input GetNavigationMenuInput {
+    hierarchyLevel: Int!
+}
+
+type NavigationMenu {
+    id: Int64!
+    parentId: Int64
+    name: String!
+    description: String!
+    createdAt: Time
+    updatedAt: Time
+    status: CategoryStatus!
+    imageUrl: String
+    subItems: JSONSlice
+}

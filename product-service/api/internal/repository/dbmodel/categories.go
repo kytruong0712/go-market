@@ -24,67 +24,67 @@ import (
 
 // Category is an object representing the database table.
 type Category struct {
-	ID           int64      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	ParentID     null.Int64 `boil:"parent_id" json:"parent_id,omitempty" toml:"parent_id" yaml:"parent_id,omitempty"`
-	CategoryName string     `boil:"category_name" json:"category_name" toml:"category_name" yaml:"category_name"`
-	CategoryCode string     `boil:"category_code" json:"category_code" toml:"category_code" yaml:"category_code"`
-	Description  string     `boil:"description" json:"description" toml:"description" yaml:"description"`
-	Status       string     `boil:"status" json:"status" toml:"status" yaml:"status"`
-	IsCatalog    null.Bool  `boil:"is_catalog" json:"is_catalog,omitempty" toml:"is_catalog" yaml:"is_catalog,omitempty"`
-	IsFilter     null.Bool  `boil:"is_filter" json:"is_filter,omitempty" toml:"is_filter" yaml:"is_filter,omitempty"`
-	CreatedAt    time.Time  `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt    time.Time  `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID            int64      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	ParentID      null.Int64 `boil:"parent_id" json:"parent_id,omitempty" toml:"parent_id" yaml:"parent_id,omitempty"`
+	CategoryName  string     `boil:"category_name" json:"category_name" toml:"category_name" yaml:"category_name"`
+	CategoryCode  string     `boil:"category_code" json:"category_code" toml:"category_code" yaml:"category_code"`
+	Description   string     `boil:"description" json:"description" toml:"description" yaml:"description"`
+	Status        string     `boil:"status" json:"status" toml:"status" yaml:"status"`
+	IsNavgitation null.Bool  `boil:"is_navgitation" json:"is_navgitation,omitempty" toml:"is_navgitation" yaml:"is_navgitation,omitempty"`
+	IsFiltering   null.Bool  `boil:"is_filtering" json:"is_filtering,omitempty" toml:"is_filtering" yaml:"is_filtering,omitempty"`
+	CreatedAt     time.Time  `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt     time.Time  `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *categoryR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L categoryL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var CategoryColumns = struct {
-	ID           string
-	ParentID     string
-	CategoryName string
-	CategoryCode string
-	Description  string
-	Status       string
-	IsCatalog    string
-	IsFilter     string
-	CreatedAt    string
-	UpdatedAt    string
+	ID            string
+	ParentID      string
+	CategoryName  string
+	CategoryCode  string
+	Description   string
+	Status        string
+	IsNavgitation string
+	IsFiltering   string
+	CreatedAt     string
+	UpdatedAt     string
 }{
-	ID:           "id",
-	ParentID:     "parent_id",
-	CategoryName: "category_name",
-	CategoryCode: "category_code",
-	Description:  "description",
-	Status:       "status",
-	IsCatalog:    "is_catalog",
-	IsFilter:     "is_filter",
-	CreatedAt:    "created_at",
-	UpdatedAt:    "updated_at",
+	ID:            "id",
+	ParentID:      "parent_id",
+	CategoryName:  "category_name",
+	CategoryCode:  "category_code",
+	Description:   "description",
+	Status:        "status",
+	IsNavgitation: "is_navgitation",
+	IsFiltering:   "is_filtering",
+	CreatedAt:     "created_at",
+	UpdatedAt:     "updated_at",
 }
 
 var CategoryTableColumns = struct {
-	ID           string
-	ParentID     string
-	CategoryName string
-	CategoryCode string
-	Description  string
-	Status       string
-	IsCatalog    string
-	IsFilter     string
-	CreatedAt    string
-	UpdatedAt    string
+	ID            string
+	ParentID      string
+	CategoryName  string
+	CategoryCode  string
+	Description   string
+	Status        string
+	IsNavgitation string
+	IsFiltering   string
+	CreatedAt     string
+	UpdatedAt     string
 }{
-	ID:           "categories.id",
-	ParentID:     "categories.parent_id",
-	CategoryName: "categories.category_name",
-	CategoryCode: "categories.category_code",
-	Description:  "categories.description",
-	Status:       "categories.status",
-	IsCatalog:    "categories.is_catalog",
-	IsFilter:     "categories.is_filter",
-	CreatedAt:    "categories.created_at",
-	UpdatedAt:    "categories.updated_at",
+	ID:            "categories.id",
+	ParentID:      "categories.parent_id",
+	CategoryName:  "categories.category_name",
+	CategoryCode:  "categories.category_code",
+	Description:   "categories.description",
+	Status:        "categories.status",
+	IsNavgitation: "categories.is_navgitation",
+	IsFiltering:   "categories.is_filtering",
+	CreatedAt:     "categories.created_at",
+	UpdatedAt:     "categories.updated_at",
 }
 
 // Generated where
@@ -223,27 +223,27 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 }
 
 var CategoryWhere = struct {
-	ID           whereHelperint64
-	ParentID     whereHelpernull_Int64
-	CategoryName whereHelperstring
-	CategoryCode whereHelperstring
-	Description  whereHelperstring
-	Status       whereHelperstring
-	IsCatalog    whereHelpernull_Bool
-	IsFilter     whereHelpernull_Bool
-	CreatedAt    whereHelpertime_Time
-	UpdatedAt    whereHelpertime_Time
+	ID            whereHelperint64
+	ParentID      whereHelpernull_Int64
+	CategoryName  whereHelperstring
+	CategoryCode  whereHelperstring
+	Description   whereHelperstring
+	Status        whereHelperstring
+	IsNavgitation whereHelpernull_Bool
+	IsFiltering   whereHelpernull_Bool
+	CreatedAt     whereHelpertime_Time
+	UpdatedAt     whereHelpertime_Time
 }{
-	ID:           whereHelperint64{field: "\"categories\".\"id\""},
-	ParentID:     whereHelpernull_Int64{field: "\"categories\".\"parent_id\""},
-	CategoryName: whereHelperstring{field: "\"categories\".\"category_name\""},
-	CategoryCode: whereHelperstring{field: "\"categories\".\"category_code\""},
-	Description:  whereHelperstring{field: "\"categories\".\"description\""},
-	Status:       whereHelperstring{field: "\"categories\".\"status\""},
-	IsCatalog:    whereHelpernull_Bool{field: "\"categories\".\"is_catalog\""},
-	IsFilter:     whereHelpernull_Bool{field: "\"categories\".\"is_filter\""},
-	CreatedAt:    whereHelpertime_Time{field: "\"categories\".\"created_at\""},
-	UpdatedAt:    whereHelpertime_Time{field: "\"categories\".\"updated_at\""},
+	ID:            whereHelperint64{field: "\"categories\".\"id\""},
+	ParentID:      whereHelpernull_Int64{field: "\"categories\".\"parent_id\""},
+	CategoryName:  whereHelperstring{field: "\"categories\".\"category_name\""},
+	CategoryCode:  whereHelperstring{field: "\"categories\".\"category_code\""},
+	Description:   whereHelperstring{field: "\"categories\".\"description\""},
+	Status:        whereHelperstring{field: "\"categories\".\"status\""},
+	IsNavgitation: whereHelpernull_Bool{field: "\"categories\".\"is_navgitation\""},
+	IsFiltering:   whereHelpernull_Bool{field: "\"categories\".\"is_filtering\""},
+	CreatedAt:     whereHelpertime_Time{field: "\"categories\".\"created_at\""},
+	UpdatedAt:     whereHelpertime_Time{field: "\"categories\".\"updated_at\""},
 }
 
 // CategoryRels is where relationship names are stored.
@@ -294,9 +294,9 @@ func (r *categoryR) GetCategoryImages() CategoryImageSlice {
 type categoryL struct{}
 
 var (
-	categoryAllColumns            = []string{"id", "parent_id", "category_name", "category_code", "description", "status", "is_catalog", "is_filter", "created_at", "updated_at"}
+	categoryAllColumns            = []string{"id", "parent_id", "category_name", "category_code", "description", "status", "is_navgitation", "is_filtering", "created_at", "updated_at"}
 	categoryColumnsWithoutDefault = []string{"id", "category_name", "category_code", "description", "status"}
-	categoryColumnsWithDefault    = []string{"parent_id", "is_catalog", "is_filter", "created_at", "updated_at"}
+	categoryColumnsWithDefault    = []string{"parent_id", "is_navgitation", "is_filtering", "created_at", "updated_at"}
 	categoryPrimaryKeyColumns     = []string{"id"}
 	categoryGeneratedColumns      = []string{}
 )

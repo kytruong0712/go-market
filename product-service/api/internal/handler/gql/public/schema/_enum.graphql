@@ -1,0 +1,10 @@
+enum CategoryStatus {
+    ACTIVE
+    INACTIVE
+    DELETED
+}
+
+enum CategoryImageType {
+    CATEGORY_BANNER
+    CATEGORY_MENU_ICON
+}

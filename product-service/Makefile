@@ -28,18 +28,24 @@ pg-migrate:
 
 ## pg-drop: reset db to blank
 pg-drop:
-	docker compose --profile tools run --rm migrate drop
+	docker-compose --profile tools run --rm migrate drop
 
 ## api-create: starts api server
 api-create:
 	@echo Starting Api container in background
-	docker compose -p="product-service" up ${API_CONTAINER}
+	docker-compose -p="product-service" up ${API_CONTAINER}
 	@echo Api container started!
 
-## api-gen-models: executes CLI command to generator new database models
+## api-gen-models: executes CLI command to generate new database models
 api-gen-models:
 	@echo Starting generate db model...
 	cd api && sh -c 'sqlboiler psql'
+	@echo Done!
+
+## api-go-generate: executes CLI command to generate go based config to handle graphql
+api-go-generate:
+	@echo Starting generate gqlgenerated file...
+	cd api && sh -c 'go generate ./...'
 	@echo Done!
 
 ## down: stop and remove all docker containers

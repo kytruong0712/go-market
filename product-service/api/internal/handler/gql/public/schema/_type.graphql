@@ -1,0 +1,4 @@
+scalar Time
+scalar Int64
+scalar Float64
+scalar JSONSlice
