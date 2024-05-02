@@ -1,4 +1,4 @@
-INSERT INTO public.categories(id, parent_id, category_name, category_code, description, is_catalog, is_filter, status)
+INSERT INTO public.categories(id, parent_id, category_name, category_code, description, is_navgitation, is_filtering, status)
 VALUES (1, null, 'Điện thoại, Tablet', 'dien-thoai-tablet', 'Điện thoại, Tablet', true, true, 'ACTIVE'),
        (2, null, 'Laptop', 'laptop', 'Laptop', true, true, 'ACTIVE'),
        (3, null, 'Âm thanh', 'am-thanh', 'Âm thanh', true, true, 'ACTIVE'),
@@ -19,12 +19,14 @@ VALUES (1, null, 'Điện thoại, Tablet', 'dien-thoai-tablet', 'Điện thoạ
        (18, 8, 'Tai nghe true-wireless', 'tai-nghe-true-wireless', 'Tai nghe true-wireless', true, true, 'ACTIVE'),
        (19, 8, 'Tai nghe có dây', 'tai-nghe-co-day', 'Tai nghe có dây', true, true, 'ACTIVE'),
        (20, 9, 'Sennheiser', 'sennheiser', 'Sennheiser', true, true, 'ACTIVE'),
-       (21, 9, 'Sony', 'sony', 'Sony', true, true, 'ACTIVE');
+       (21, 9, 'Sony', 'sony', 'Sony', true, true, 'ACTIVE'),
+       (22, 10, 'Iphone 15 series', 'iphone-15-series', 'Iphone 15 series', true, true, 'ACTIVE'),
+       (23, 14, 'Dell XPS series', 'dell-xps-series', 'Dell XPS series', true, true, 'ACTIVE');
 
 INSERT INTO public.uploaded_files(id, file_name, file_size_kb, file_path, file_type, resolution, status)
-VALUES (1, 'cate1.png', '1000', 'foo/bar/', 'IMAGE', '100x100', 'ACTIVE'),
-       (2, 'cate2.png', '1000', 'foo/bar/', 'IMAGE', '100x100', 'ACTIVE'),
-       (3, 'cate3.png', '1000', 'foo/bar/', 'IMAGE', '100x100', 'ACTIVE');
+VALUES (1, 'cate1.png', '1000', 'foo/bar', 'IMAGE', '100x100', 'ACTIVE'),
+       (2, 'cate2.png', '1000', 'foo/bar', 'IMAGE', '100x100', 'ACTIVE'),
+       (3, 'cate3.png', '1000', 'foo/bar', 'IMAGE', '100x100', 'ACTIVE');
 
 INSERT INTO public.category_images(id, category_id, uploaded_file_id, status, image_type)
 VALUES (1, 1, 1, 'ACTIVE', 'CATEGORY_MENU_ICON'),

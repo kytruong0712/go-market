@@ -1,0 +1,16 @@
+type NavigationMenuItem {
+    id: Int64!
+    parentId: Int64
+    name: String!
+    description: String!
+    createdAt: Time
+    updatedAt: Time
+    status: CategoryStatus!
+    imageUrl: String
+    subItems: [NavigationMenuItem]
+}
+
+type NavigationMenu {
+    nestedItems : [NavigationMenuItem!]!
+    nestedLevel: Int!
+}

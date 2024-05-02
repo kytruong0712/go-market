@@ -1,0 +1,28 @@
+schema:
+  - schema/*.graphql
+
+exec:
+  filename: gqlgenerated.go
+  package: public
+
+model:
+  filename: ../mod/models_gen.go
+
+skip_validation: true
+skip_mod_tidy: true
+struct_tag: json
+
+models:
+  Time:
+    model: github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/scalar.Time
+  Int64:
+    model: github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/scalar.Int64
+  Float64:
+    model: github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/scalar.Float64
+  JSONSlice:
+    model: github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/scalar.JSONSlice
+  CategoryStatus:
+    model: github.com/kytruong0712/go-market/product-service/api/internal/model.CategoryStatus
+  CategoryImageType:
+    model: github.com/kytruong0712/go-market/product-service/api/internal/model.CategoryImageType
+

@@ -8,7 +8,25 @@ DATABASE_CONTAINER ?= database
 run: pg-create api-create
 
 ## api-setup: executes pre-defined steps to setup api server
-api-setup: pg-create pg-migrate api-gen-models
+api-setup: pg-create pg-migrate api-gen-models api-go-generate
+
+## api-create: starts api server
+api-create:
+	@echo Starting Api container in background
+	docker-compose -p="product-service" up ${API_CONTAINER}
+	@echo Api container started!
+
+## api-gen-models: executes CLI command to generate new database models
+api-gen-models:
+	@echo Starting generate db model...
+	cd api && sh -c 'sqlboiler psql'
+	@echo Done!
+
+## api-go-generate: executes CLI command to generate go based config to handle graphql
+api-go-generate:
+	@echo Starting generate gqlgenerated file...
+	cd api && sh -c 'go generate ./...'
+	@echo Done!
 
 ## pg-create: starts postgres container
 pg-create:
@@ -28,19 +46,13 @@ pg-migrate:
 
 ## pg-drop: reset db to blank
 pg-drop:
-	docker compose --profile tools run --rm migrate drop
-
-## api-create: starts api server
-api-create:
-	@echo Starting Api container in background
-	docker compose -p="product-service" up ${API_CONTAINER}
-	@echo Api container started!
-
-## api-gen-models: executes CLI command to generator new database models
-api-gen-models:
-	@echo Starting generate db model...
-	cd api && sh -c 'sqlboiler psql'
+	@echo Dropping database...
+	docker-compose --profile tools run --rm migrate drop
 	@echo Done!
+
+## pg-redo: rollbacks migrations against non test DB
+pg-redo:
+	docker compose -f ${DOCKER_COMPOSE_FILE} --profile tools run --rm migrate down
 
 ## down: stop and remove all docker containers
 down:

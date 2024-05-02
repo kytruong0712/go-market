@@ -9,6 +9,7 @@ import (
 	"github.com/kytruong0712/go-market/product-service/api/cmd/banner"
 	"github.com/kytruong0712/go-market/product-service/api/internal/config/db/pg"
 	"github.com/kytruong0712/go-market/product-service/api/internal/config/httpserver"
+	"github.com/kytruong0712/go-market/product-service/api/internal/controller/categories"
 	"github.com/kytruong0712/go-market/product-service/api/internal/controller/system"
 	systemrest "github.com/kytruong0712/go-market/product-service/api/internal/handler/rest/system"
 	"github.com/kytruong0712/go-market/product-service/api/internal/repository"
@@ -46,9 +47,11 @@ func initRouter(
 	repo := repository.New(db)
 
 	systemCtrl := system.New(repo)
+	categoryCtrl := categories.New(repo)
 
 	return router{
-		systemCtrl:  systemCtrl,
-		corsOrigins: []string{"*"},
+		systemCtrl:   systemCtrl,
+		categoryCtrl: categoryCtrl,
+		corsOrigins:  []string{"*"},
 	}, nil
 }

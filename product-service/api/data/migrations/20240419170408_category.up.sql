@@ -13,16 +13,16 @@ CREATE TABLE IF NOT EXISTS public.uploaded_files
 
 CREATE TABLE IF NOT EXISTS public.categories
 (
-    id                             BIGINT PRIMARY KEY,
-    parent_id                      BIGINT                            REFERENCES public.categories (id),
-    category_name                  TEXT                     NOT NULL CHECK (category_name <> ''::TEXT),
-    category_code                  TEXT                     NOT NULL CHECK (category_code <> ''::TEXT),
-    description                    TEXT                     NOT NULL CHECK (description <> ''::TEXT),
-    status                         TEXT                     NOT NULL CHECK (status <> ''::TEXT),
-    is_catalog                     BOOLEAN,
-    is_filter                      BOOLEAN,
-    created_at                     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at                     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    id                 BIGINT PRIMARY KEY,
+    parent_id          BIGINT                            REFERENCES public.categories (id),
+    category_name      TEXT                     NOT NULL CHECK (category_name <> ''::TEXT),
+    category_code      TEXT                     NOT NULL CHECK (category_code <> ''::TEXT),
+    description        TEXT                     NOT NULL CHECK (description <> ''::TEXT),
+    status             TEXT                     NOT NULL CHECK (status <> ''::TEXT),
+    is_navgitation     BOOLEAN,
+    is_filtering       BOOLEAN,
+    created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS public.category_images
