@@ -3,59 +3,60 @@ package categories
 import (
 	"context"
 
-	"github.com/kytruong0712/go-market/product-service/api/internal/repository/category"
-
 	"github.com/kytruong0712/go-market/product-service/api/internal/model"
+	"github.com/kytruong0712/go-market/product-service/api/internal/repository/category"
 )
 
-type GetNavigationItemsInput struct {
-	HierarchyLevel int
-}
-
-// GetNavigationItems gets navigation items
-func (i impl) GetNavigationItems(ctx context.Context, inp GetNavigationItemsInput) ([]model.Category, error) {
+// GetCategoriesHierarchy gets categories hierarchy
+func (i impl) GetCategoriesHierarchy(ctx context.Context) (model.CategoriesHierarchy, error) {
 	slice, err := i.repo.Category().GetCategories(ctx, category.GetCategoriesInput{
 		LoadImages:          true,
 		LoadNavigationItems: true,
 	})
 	if err != nil {
-		return nil, err
+		return model.CategoriesHierarchy{}, err
 	}
 
-	var currentHierarchyLevel = 1
+	const (
+		parentID     = 0
+		currentLevel = 0
+	)
 
-	return buildCatalogsHierarchy(slice, 0, inp.HierarchyLevel, currentHierarchyLevel), nil
+	ch, lvl := buildCategoriesHierarchy(slice, parentID, currentLevel)
+
+	return model.CategoriesHierarchy{
+		NestedCategories: ch,
+		NestedLevel:      lvl,
+	}, nil
 }
 
-func buildCatalogsHierarchy(flattenCategories []model.Category, parentID int64, maxHierarchyLevel, currentHierarchyLevel int) []model.Category {
-	if currentHierarchyLevel > maxHierarchyLevel {
-		return nil
-	}
-
+func buildCategoriesHierarchy(flattenCategories []model.Category, parentID int64, currentLevel int) ([]model.Category, int) {
 	var categories []model.Category
 
-	i := 0
-	for i < len(flattenCategories) {
-		if flattenCategories[i].ParentID == parentID {
+	maxLevel := currentLevel
+	for _, item := range flattenCategories {
+		if item.ParentID == parentID {
 			c := model.Category{
-				ID:            flattenCategories[i].ID,
-				ParentID:      flattenCategories[i].ParentID,
-				Name:          flattenCategories[i].Name,
-				Code:          flattenCategories[i].Code,
-				Description:   flattenCategories[i].Description,
-				CreatedAt:     flattenCategories[i].CreatedAt,
-				UpdatedAt:     flattenCategories[i].UpdatedAt,
-				Status:        flattenCategories[i].Status,
-				Images:        flattenCategories[i].Images,
-				SubCategories: buildCatalogsHierarchy(flattenCategories[i+1:], flattenCategories[i].ID, maxHierarchyLevel, currentHierarchyLevel+1),
+				ID:          item.ID,
+				ParentID:    item.ParentID,
+				Name:        item.Name,
+				Code:        item.Code,
+				Description: item.Description,
+				CreatedAt:   item.CreatedAt,
+				UpdatedAt:   item.UpdatedAt,
+				Status:      item.Status,
+				Images:      item.Images,
 			}
 
+			var level int
+			c.SubCategories, level = buildCategoriesHierarchy(flattenCategories, item.ID, currentLevel+1)
 			categories = append(categories, c)
-			flattenCategories = append(flattenCategories[:i], flattenCategories[i+1:]...)
-		} else {
-			i++
+
+			if level > maxLevel {
+				maxLevel = level
+			}
 		}
 	}
 
-	return categories
+	return categories, maxLevel
 }

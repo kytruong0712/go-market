@@ -2,52 +2,45 @@ package public
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
-	"github.com/kytruong0712/go-market/product-service/api/internal/controller/categories"
-	"github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/scalar"
-	"github.com/kytruong0712/go-market/product-service/api/internal/model"
-
 	"github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/mod"
-	"github.com/volatiletech/sqlboiler/v4/types"
+	"github.com/kytruong0712/go-market/product-service/api/internal/model"
 )
 
-type GetNavigationMenuInput struct {
-	HierarchyLevel int
-}
-
-func (r *queryResolver) GetNavigationMenu(ctx context.Context, inp GetNavigationMenuInput) ([]*mod.NavigationMenu, error) {
-	if inp.HierarchyLevel <= 0 {
-		return nil, WebErrHierarchyLevelInvalid
-	}
-
-	items, err := r.categoryCtrl.GetNavigationItems(ctx, categories.GetNavigationItemsInput{
-		HierarchyLevel: inp.HierarchyLevel,
-	})
+// GetNavigationMenu gets navigation menu items
+func (r *queryResolver) GetNavigationMenu(ctx context.Context) (*mod.NavigationMenu, error) {
+	rs, err := r.categoryCtrl.GetCategoriesHierarchy(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return newNavigationMenuSlice(items), nil
+	return newNavigationMenu(rs), nil
 }
 
-func newNavigationMenuSlice(cis []model.Category) []*mod.NavigationMenu {
-	slice := make([]*mod.NavigationMenu, 0, 0)
+func newNavigationMenu(m model.CategoriesHierarchy) *mod.NavigationMenu {
+	return &mod.NavigationMenu{
+		NestedItems: toNestedItems(m.NestedCategories),
+		NestedLevel: m.NestedLevel,
+	}
+}
+
+func toNestedItems(cis []model.Category) []*mod.NavigationMenuItem {
+	slice := make([]*mod.NavigationMenuItem, 0)
 	for _, ci := range cis {
-		slice = append(slice, newCategoryMenu(ci))
+		slice = append(slice, toMenuItem(ci))
 	}
 
 	return slice
 }
 
-func newCategoryMenu(m model.Category) *mod.NavigationMenu {
+func toMenuItem(m model.Category) *mod.NavigationMenuItem {
 	var imgUrl string
 	if len(m.Images) > 0 {
 		imgUrl = fmt.Sprintf("/%s/%s", m.Images[0].ImagePath, m.Images[0].ImageName)
 	}
 
-	nav := &mod.NavigationMenu{
+	return &mod.NavigationMenuItem{
 		ID:          m.ID,
 		ParentID:    &m.ParentID,
 		Name:        m.Name,
@@ -56,34 +49,24 @@ func newCategoryMenu(m model.Category) *mod.NavigationMenu {
 		UpdatedAt:   &m.UpdatedAt,
 		Status:      m.Status,
 		ImageURL:    &imgUrl,
+		SubItems:    appendSubItems(m.SubCategories),
 	}
-
-	subItems, err := getSubItems(m)
-	if err != nil {
-		panic(err)
-	}
-
-	nav.SubItems = subItems
-
-	return nav
 }
 
-func getSubItems(m model.Category) (scalar.JSONSlice, error) {
-	var jsonSlice scalar.JSONSlice
-
-	for _, v := range m.SubCategories {
-		byteData, err := json.Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		tmp := make(map[string]types.JSON)
-		err = json.Unmarshal(byteData, &tmp)
-		if err != nil {
-			return nil, err
-		}
-
-		jsonSlice = append(jsonSlice, tmp)
+func appendSubItems(arr []model.Category) []*mod.NavigationMenuItem {
+	var subItems []*mod.NavigationMenuItem
+	for _, item := range arr {
+		subItems = append(subItems, &mod.NavigationMenuItem{
+			ID:          item.ID,
+			ParentID:    &item.ParentID,
+			Name:        item.Name,
+			Description: item.Description,
+			CreatedAt:   &item.CreatedAt,
+			UpdatedAt:   &item.UpdatedAt,
+			Status:      item.Status,
+			SubItems:    appendSubItems(item.SubCategories),
+		})
 	}
 
-	return jsonSlice, nil
+	return subItems
 }

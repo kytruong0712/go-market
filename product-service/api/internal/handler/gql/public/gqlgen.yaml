@@ -25,6 +25,4 @@ models:
     model: github.com/kytruong0712/go-market/product-service/api/internal/model.CategoryStatus
   CategoryImageType:
     model: github.com/kytruong0712/go-market/product-service/api/internal/model.CategoryImageType
-  GetNavigationMenuInput:
-    model: github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/public.GetNavigationMenuInput
 

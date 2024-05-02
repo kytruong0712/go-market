@@ -50,6 +50,11 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	NavigationMenu struct {
+		NestedItems func(childComplexity int) int
+		NestedLevel func(childComplexity int) int
+	}
+
+	NavigationMenuItem struct {
 		CreatedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
 		ID          func(childComplexity int) int
@@ -62,12 +67,12 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetNavigationMenu func(childComplexity int, input GetNavigationMenuInput) int
+		GetNavigationMenu func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
-	GetNavigationMenu(ctx context.Context, input GetNavigationMenuInput) ([]*mod.NavigationMenu, error)
+	GetNavigationMenu(ctx context.Context) (*mod.NavigationMenu, error)
 }
 
 type executableSchema struct {
@@ -89,80 +94,89 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "NavigationMenu.createdAt":
-		if e.complexity.NavigationMenu.CreatedAt == nil {
+	case "NavigationMenu.nestedItems":
+		if e.complexity.NavigationMenu.NestedItems == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.CreatedAt(childComplexity), true
+		return e.complexity.NavigationMenu.NestedItems(childComplexity), true
 
-	case "NavigationMenu.description":
-		if e.complexity.NavigationMenu.Description == nil {
+	case "NavigationMenu.nestedLevel":
+		if e.complexity.NavigationMenu.NestedLevel == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.Description(childComplexity), true
+		return e.complexity.NavigationMenu.NestedLevel(childComplexity), true
 
-	case "NavigationMenu.id":
-		if e.complexity.NavigationMenu.ID == nil {
+	case "NavigationMenuItem.createdAt":
+		if e.complexity.NavigationMenuItem.CreatedAt == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.ID(childComplexity), true
+		return e.complexity.NavigationMenuItem.CreatedAt(childComplexity), true
 
-	case "NavigationMenu.imageUrl":
-		if e.complexity.NavigationMenu.ImageURL == nil {
+	case "NavigationMenuItem.description":
+		if e.complexity.NavigationMenuItem.Description == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.ImageURL(childComplexity), true
+		return e.complexity.NavigationMenuItem.Description(childComplexity), true
 
-	case "NavigationMenu.name":
-		if e.complexity.NavigationMenu.Name == nil {
+	case "NavigationMenuItem.id":
+		if e.complexity.NavigationMenuItem.ID == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.Name(childComplexity), true
+		return e.complexity.NavigationMenuItem.ID(childComplexity), true
 
-	case "NavigationMenu.parentId":
-		if e.complexity.NavigationMenu.ParentID == nil {
+	case "NavigationMenuItem.imageUrl":
+		if e.complexity.NavigationMenuItem.ImageURL == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.ParentID(childComplexity), true
+		return e.complexity.NavigationMenuItem.ImageURL(childComplexity), true
 
-	case "NavigationMenu.status":
-		if e.complexity.NavigationMenu.Status == nil {
+	case "NavigationMenuItem.name":
+		if e.complexity.NavigationMenuItem.Name == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.Status(childComplexity), true
+		return e.complexity.NavigationMenuItem.Name(childComplexity), true
 
-	case "NavigationMenu.subItems":
-		if e.complexity.NavigationMenu.SubItems == nil {
+	case "NavigationMenuItem.parentId":
+		if e.complexity.NavigationMenuItem.ParentID == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.SubItems(childComplexity), true
+		return e.complexity.NavigationMenuItem.ParentID(childComplexity), true
 
-	case "NavigationMenu.updatedAt":
-		if e.complexity.NavigationMenu.UpdatedAt == nil {
+	case "NavigationMenuItem.status":
+		if e.complexity.NavigationMenuItem.Status == nil {
 			break
 		}
 
-		return e.complexity.NavigationMenu.UpdatedAt(childComplexity), true
+		return e.complexity.NavigationMenuItem.Status(childComplexity), true
+
+	case "NavigationMenuItem.subItems":
+		if e.complexity.NavigationMenuItem.SubItems == nil {
+			break
+		}
+
+		return e.complexity.NavigationMenuItem.SubItems(childComplexity), true
+
+	case "NavigationMenuItem.updatedAt":
+		if e.complexity.NavigationMenuItem.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.NavigationMenuItem.UpdatedAt(childComplexity), true
 
 	case "Query.getNavigationMenu":
 		if e.complexity.Query.GetNavigationMenu == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getNavigationMenu_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetNavigationMenu(childComplexity, args["input"].(GetNavigationMenuInput)), true
+		return e.complexity.Query.GetNavigationMenu(childComplexity), true
 
 	}
 	return 0, false
@@ -171,9 +185,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
-	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputGetNavigationMenuInput,
-	)
+	inputUnmarshalMap := graphql.BuildUnmarshalerMap()
 	first := true
 
 	switch rc.Operation.Operation {
@@ -292,21 +304,6 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getNavigationMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 GetNavigationMenuInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNGetNavigationMenuInput2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋpublicᚐGetNavigationMenuInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -345,8 +342,116 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _NavigationMenu_id(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_id(ctx, field)
+func (ec *executionContext) _NavigationMenu_nestedItems(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenu_nestedItems(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NestedItems, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*mod.NavigationMenuItem)
+	fc.Result = res
+	return ec.marshalNNavigationMenuItem2ᚕᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItemᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NavigationMenu_nestedItems(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NavigationMenu",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_NavigationMenuItem_id(ctx, field)
+			case "parentId":
+				return ec.fieldContext_NavigationMenuItem_parentId(ctx, field)
+			case "name":
+				return ec.fieldContext_NavigationMenuItem_name(ctx, field)
+			case "description":
+				return ec.fieldContext_NavigationMenuItem_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_NavigationMenuItem_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_NavigationMenuItem_updatedAt(ctx, field)
+			case "status":
+				return ec.fieldContext_NavigationMenuItem_status(ctx, field)
+			case "imageUrl":
+				return ec.fieldContext_NavigationMenuItem_imageUrl(ctx, field)
+			case "subItems":
+				return ec.fieldContext_NavigationMenuItem_subItems(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type NavigationMenuItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NavigationMenu_nestedLevel(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenu_nestedLevel(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NestedLevel, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NavigationMenu_nestedLevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NavigationMenu",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NavigationMenuItem_id(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -376,9 +481,9 @@ func (ec *executionContext) _NavigationMenu_id(ctx context.Context, field graphq
 	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -389,8 +494,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_id(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_parentId(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_parentId(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_parentId(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_parentId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -417,9 +522,9 @@ func (ec *executionContext) _NavigationMenu_parentId(ctx context.Context, field 
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_parentId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_parentId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -430,8 +535,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_parentId(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_name(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_name(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_name(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_name(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -461,9 +566,9 @@ func (ec *executionContext) _NavigationMenu_name(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -474,8 +579,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_name(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_description(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_description(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_description(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_description(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -505,9 +610,9 @@ func (ec *executionContext) _NavigationMenu_description(ctx context.Context, fie
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -518,8 +623,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_description(ctx context.
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_createdAt(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_createdAt(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_createdAt(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -546,9 +651,9 @@ func (ec *executionContext) _NavigationMenu_createdAt(ctx context.Context, field
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -559,8 +664,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_createdAt(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_updatedAt(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_updatedAt(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_updatedAt(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -587,9 +692,9 @@ func (ec *executionContext) _NavigationMenu_updatedAt(ctx context.Context, field
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -600,8 +705,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_updatedAt(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_status(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_status(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_status(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_status(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -631,9 +736,9 @@ func (ec *executionContext) _NavigationMenu_status(ctx context.Context, field gr
 	return ec.marshalNCategoryStatus2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋmodelᚐCategoryStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -644,8 +749,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_status(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_imageUrl(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_imageUrl(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_imageUrl(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_imageUrl(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -672,9 +777,9 @@ func (ec *executionContext) _NavigationMenu_imageUrl(ctx context.Context, field 
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_imageUrl(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_imageUrl(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -685,8 +790,8 @@ func (ec *executionContext) fieldContext_NavigationMenu_imageUrl(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _NavigationMenu_subItems(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenu) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NavigationMenu_subItems(ctx, field)
+func (ec *executionContext) _NavigationMenuItem_subItems(ctx context.Context, field graphql.CollectedField, obj *mod.NavigationMenuItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NavigationMenuItem_subItems(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -708,19 +813,39 @@ func (ec *executionContext) _NavigationMenu_subItems(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(scalar.JSONSlice)
+	res := resTmp.([]*mod.NavigationMenuItem)
 	fc.Result = res
-	return ec.marshalOJSONSlice2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋscalarᚐJSONSlice(ctx, field.Selections, res)
+	return ec.marshalONavigationMenuItem2ᚕᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItem(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NavigationMenu_subItems(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NavigationMenuItem_subItems(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "NavigationMenu",
+		Object:     "NavigationMenuItem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONSlice does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_NavigationMenuItem_id(ctx, field)
+			case "parentId":
+				return ec.fieldContext_NavigationMenuItem_parentId(ctx, field)
+			case "name":
+				return ec.fieldContext_NavigationMenuItem_name(ctx, field)
+			case "description":
+				return ec.fieldContext_NavigationMenuItem_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_NavigationMenuItem_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_NavigationMenuItem_updatedAt(ctx, field)
+			case "status":
+				return ec.fieldContext_NavigationMenuItem_status(ctx, field)
+			case "imageUrl":
+				return ec.fieldContext_NavigationMenuItem_imageUrl(ctx, field)
+			case "subItems":
+				return ec.fieldContext_NavigationMenuItem_subItems(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type NavigationMenuItem", field.Name)
 		},
 	}
 	return fc, nil
@@ -740,7 +865,7 @@ func (ec *executionContext) _Query_getNavigationMenu(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetNavigationMenu(rctx, fc.Args["input"].(GetNavigationMenuInput))
+		return ec.resolvers.Query().GetNavigationMenu(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -752,9 +877,9 @@ func (ec *executionContext) _Query_getNavigationMenu(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*mod.NavigationMenu)
+	res := resTmp.(*mod.NavigationMenu)
 	fc.Result = res
-	return ec.marshalNNavigationMenu2ᚕᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuᚄ(ctx, field.Selections, res)
+	return ec.marshalNNavigationMenu2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenu(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getNavigationMenu(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -765,38 +890,13 @@ func (ec *executionContext) fieldContext_Query_getNavigationMenu(ctx context.Con
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_NavigationMenu_id(ctx, field)
-			case "parentId":
-				return ec.fieldContext_NavigationMenu_parentId(ctx, field)
-			case "name":
-				return ec.fieldContext_NavigationMenu_name(ctx, field)
-			case "description":
-				return ec.fieldContext_NavigationMenu_description(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_NavigationMenu_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_NavigationMenu_updatedAt(ctx, field)
-			case "status":
-				return ec.fieldContext_NavigationMenu_status(ctx, field)
-			case "imageUrl":
-				return ec.fieldContext_NavigationMenu_imageUrl(ctx, field)
-			case "subItems":
-				return ec.fieldContext_NavigationMenu_subItems(ctx, field)
+			case "nestedItems":
+				return ec.fieldContext_NavigationMenu_nestedItems(ctx, field)
+			case "nestedLevel":
+				return ec.fieldContext_NavigationMenu_nestedLevel(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type NavigationMenu", field.Name)
 		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getNavigationMenu_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -2703,33 +2803,6 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputGetNavigationMenuInput(ctx context.Context, obj interface{}) (GetNavigationMenuInput, error) {
-	var it GetNavigationMenuInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"hierarchyLevel"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "hierarchyLevel":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hierarchyLevel"))
-			data, err := ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HierarchyLevel = data
-		}
-	}
-
-	return it, nil
-}
-
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2749,36 +2822,80 @@ func (ec *executionContext) _NavigationMenu(ctx context.Context, sel ast.Selecti
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("NavigationMenu")
+		case "nestedItems":
+			out.Values[i] = ec._NavigationMenu_nestedItems(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "nestedLevel":
+			out.Values[i] = ec._NavigationMenu_nestedLevel(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var navigationMenuItemImplementors = []string{"NavigationMenuItem"}
+
+func (ec *executionContext) _NavigationMenuItem(ctx context.Context, sel ast.SelectionSet, obj *mod.NavigationMenuItem) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, navigationMenuItemImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NavigationMenuItem")
 		case "id":
-			out.Values[i] = ec._NavigationMenu_id(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "parentId":
-			out.Values[i] = ec._NavigationMenu_parentId(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_parentId(ctx, field, obj)
 		case "name":
-			out.Values[i] = ec._NavigationMenu_name(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "description":
-			out.Values[i] = ec._NavigationMenu_description(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_description(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "createdAt":
-			out.Values[i] = ec._NavigationMenu_createdAt(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_createdAt(ctx, field, obj)
 		case "updatedAt":
-			out.Values[i] = ec._NavigationMenu_updatedAt(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_updatedAt(ctx, field, obj)
 		case "status":
-			out.Values[i] = ec._NavigationMenu_status(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_status(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "imageUrl":
-			out.Values[i] = ec._NavigationMenu_imageUrl(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_imageUrl(ctx, field, obj)
 		case "subItems":
-			out.Values[i] = ec._NavigationMenu_subItems(ctx, field, obj)
+			out.Values[i] = ec._NavigationMenuItem_subItems(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3231,11 +3348,6 @@ func (ec *executionContext) marshalNCategoryStatus2githubᚗcomᚋkytruong0712�
 	return res
 }
 
-func (ec *executionContext) unmarshalNGetNavigationMenuInput2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋpublicᚐGetNavigationMenuInput(ctx context.Context, v interface{}) (GetNavigationMenuInput, error) {
-	res, err := ec.unmarshalInputGetNavigationMenuInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3266,7 +3378,21 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) marshalNNavigationMenu2ᚕᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuᚄ(ctx context.Context, sel ast.SelectionSet, v []*mod.NavigationMenu) graphql.Marshaler {
+func (ec *executionContext) marshalNNavigationMenu2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenu(ctx context.Context, sel ast.SelectionSet, v mod.NavigationMenu) graphql.Marshaler {
+	return ec._NavigationMenu(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNNavigationMenu2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenu(ctx context.Context, sel ast.SelectionSet, v *mod.NavigationMenu) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._NavigationMenu(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNNavigationMenuItem2ᚕᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*mod.NavigationMenuItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3290,7 +3416,7 @@ func (ec *executionContext) marshalNNavigationMenu2ᚕᚖgithubᚗcomᚋkytruong
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNNavigationMenu2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenu(ctx, sel, v[i])
+			ret[i] = ec.marshalNNavigationMenuItem2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3310,14 +3436,14 @@ func (ec *executionContext) marshalNNavigationMenu2ᚕᚖgithubᚗcomᚋkytruong
 	return ret
 }
 
-func (ec *executionContext) marshalNNavigationMenu2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenu(ctx context.Context, sel ast.SelectionSet, v *mod.NavigationMenu) graphql.Marshaler {
+func (ec *executionContext) marshalNNavigationMenuItem2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItem(ctx context.Context, sel ast.SelectionSet, v *mod.NavigationMenuItem) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
-	return ec._NavigationMenu(ctx, sel, v)
+	return ec._NavigationMenuItem(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -3630,20 +3756,52 @@ func (ec *executionContext) marshalOInt642ᚖint64(ctx context.Context, sel ast.
 	return res
 }
 
-func (ec *executionContext) unmarshalOJSONSlice2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋscalarᚐJSONSlice(ctx context.Context, v interface{}) (scalar.JSONSlice, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res scalar.JSONSlice
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOJSONSlice2githubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋscalarᚐJSONSlice(ctx context.Context, sel ast.SelectionSet, v scalar.JSONSlice) graphql.Marshaler {
+func (ec *executionContext) marshalONavigationMenuItem2ᚕᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItem(ctx context.Context, sel ast.SelectionSet, v []*mod.NavigationMenuItem) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalONavigationMenuItem2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItem(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalONavigationMenuItem2ᚖgithubᚗcomᚋkytruong0712ᚋgoᚑmarketᚋproductᚑserviceᚋapiᚋinternalᚋhandlerᚋgqlᚋmodᚐNavigationMenuItem(ctx context.Context, sel ast.SelectionSet, v *mod.NavigationMenuItem) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._NavigationMenuItem(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

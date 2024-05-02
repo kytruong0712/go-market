@@ -36,18 +36,18 @@ func (c CategoryImageType) String() string {
 
 // Category represents the category to populate
 type Category struct {
-	ID            int64           `json:"id"`
-	ParentID      int64           `json:"parentId"`
-	Name          string          `json:"name"`
-	Code          string          `json:"code"`
-	Description   string          `json:"description"`
-	IsNavigation  bool            `json:"isNavigation,omitempty"`
-	IsFiltering   bool            `json:"isFiltering,omitempty"`
-	CreatedAt     time.Time       `json:"createdAt"`
-	UpdatedAt     time.Time       `json:"updatedAt"`
-	Status        CategoryStatus  `json:"status"`
-	Images        []CategoryImage `json:"images,omitempty"`
-	SubCategories []Category      `json:"subItems,omitempty"`
+	ID            int64
+	ParentID      int64
+	Name          string
+	Code          string
+	Description   string
+	IsNavigation  bool
+	IsFiltering   bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Status        CategoryStatus
+	Images        []CategoryImage
+	SubCategories []Category
 }
 
 // CategoryImage represents the category images

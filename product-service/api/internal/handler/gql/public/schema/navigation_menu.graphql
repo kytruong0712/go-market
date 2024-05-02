@@ -1,8 +1,4 @@
-input GetNavigationMenuInput {
-    hierarchyLevel: Int!
-}
-
-type NavigationMenu {
+type NavigationMenuItem {
     id: Int64!
     parentId: Int64
     name: String!
@@ -11,5 +7,10 @@ type NavigationMenu {
     updatedAt: Time
     status: CategoryStatus!
     imageUrl: String
-    subItems: JSONSlice
+    subItems: [NavigationMenuItem]
+}
+
+type NavigationMenu {
+    nestedItems : [NavigationMenuItem!]!
+    nestedLevel: Int!
 }

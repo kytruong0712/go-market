@@ -5,20 +5,24 @@ package mod
 import (
 	"time"
 
-	"github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/scalar"
 	"github.com/kytruong0712/go-market/product-service/api/internal/model"
 )
 
 type NavigationMenu struct {
-	ID          int64                `json:"id"`
-	ParentID    *int64               `json:"parentId,omitempty"`
-	Name        string               `json:"name"`
-	Description string               `json:"description"`
-	CreatedAt   *time.Time           `json:"createdAt,omitempty"`
-	UpdatedAt   *time.Time           `json:"updatedAt,omitempty"`
-	Status      model.CategoryStatus `json:"status"`
-	ImageURL    *string              `json:"imageUrl,omitempty"`
-	SubItems    scalar.JSONSlice     `json:"subItems,omitempty"`
+	NestedItems []*NavigationMenuItem `json:"nestedItems"`
+	NestedLevel int                   `json:"nestedLevel"`
+}
+
+type NavigationMenuItem struct {
+	ID          int64                 `json:"id"`
+	ParentID    *int64                `json:"parentId,omitempty"`
+	Name        string                `json:"name"`
+	Description string                `json:"description"`
+	CreatedAt   *time.Time            `json:"createdAt,omitempty"`
+	UpdatedAt   *time.Time            `json:"updatedAt,omitempty"`
+	Status      model.CategoryStatus  `json:"status"`
+	ImageURL    *string               `json:"imageUrl,omitempty"`
+	SubItems    []*NavigationMenuItem `json:"subItems,omitempty"`
 }
 
 type Query struct {

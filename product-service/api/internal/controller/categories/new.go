@@ -9,8 +9,8 @@ import (
 
 // Controller provides the specification of the functionality provided by this pkg
 type Controller interface {
-	// GetNavigationItems gets navigation items
-	GetNavigationItems(context.Context, GetNavigationItemsInput) ([]model.Category, error)
+	// GetCategoriesHierarchy gets categories hierarchy
+	GetCategoriesHierarchy(context.Context) (model.CategoriesHierarchy, error)
 }
 
 type impl struct {
