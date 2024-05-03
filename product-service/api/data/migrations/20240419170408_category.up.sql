@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS public.categories
     category_code      TEXT                     NOT NULL CHECK (category_code <> ''::TEXT),
     description        TEXT                     NOT NULL CHECK (description <> ''::TEXT),
     status             TEXT                     NOT NULL CHECK (status <> ''::TEXT),
-    is_navgitation     BOOLEAN,
-    is_filtering       BOOLEAN,
+    is_navgitation     BOOLEAN                  NOT NULL,
     created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
