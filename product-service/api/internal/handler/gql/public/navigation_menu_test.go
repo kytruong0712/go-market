@@ -9,6 +9,7 @@ import (
 	"github.com/kytruong0712/go-market/product-service/api/internal/controller/categories"
 	"github.com/kytruong0712/go-market/product-service/api/internal/handler/gql/mod"
 	"github.com/kytruong0712/go-market/product-service/api/internal/model"
+	"github.com/kytruong0712/go-market/product-service/api/internal/utils/ptr"
 
 	"github.com/stretchr/testify/require"
 )
@@ -124,17 +125,17 @@ func TestQueryResolver_GetNavigationMenu(t *testing.T) {
 				NestedItems: []*mod.NavigationMenuItem{
 					{
 						ID:          1,
-						ParentID:    func() *int64 { pID := int64(0); return &pID }(),
+						ParentID:    ptr.ToIntPtr(int64(0)),
 						Name:        "Cate 1",
 						Description: "Cate 1",
 						Status:      "ACTIVE",
-						ImageURL:    func() *string { url := "/foo/bar/cate1.png"; return &url }(),
+						ImageURL:    ptr.ToStringPtr("/foo/bar/cate1.png"),
 						CreatedAt:   &dt,
 						UpdatedAt:   &dt,
 						SubItems: []*mod.NavigationMenuItem{
 							{
 								ID:          3,
-								ParentID:    func() *int64 { pID := int64(1); return &pID }(),
+								ParentID:    ptr.ToIntPtr(int64(1)),
 								Name:        "Cate 1.1",
 								Description: "Cate 1.1",
 								Status:      "ACTIVE",
@@ -143,7 +144,7 @@ func TestQueryResolver_GetNavigationMenu(t *testing.T) {
 								SubItems: []*mod.NavigationMenuItem{
 									{
 										ID:          5,
-										ParentID:    func() *int64 { pID := int64(3); return &pID }(),
+										ParentID:    ptr.ToIntPtr(int64(3)),
 										Name:        "Cate 1.1.1",
 										Description: "Cate 1.1.1",
 										Status:      "ACTIVE",
@@ -156,17 +157,17 @@ func TestQueryResolver_GetNavigationMenu(t *testing.T) {
 					},
 					{
 						ID:          2,
-						ParentID:    func() *int64 { pID := int64(0); return &pID }(),
+						ParentID:    ptr.ToIntPtr(int64(0)),
 						Name:        "Cate 2",
 						Description: "Cate 2",
 						Status:      "ACTIVE",
-						ImageURL:    func() *string { url := "/foo/bar/cate2.png"; return &url }(),
+						ImageURL:    ptr.ToStringPtr("/foo/bar/cate2.png"),
 						CreatedAt:   &dt,
 						UpdatedAt:   &dt,
 						SubItems: []*mod.NavigationMenuItem{
 							{
 								ID:          4,
-								ParentID:    func() *int64 { pID := int64(2); return &pID }(),
+								ParentID:    ptr.ToIntPtr(int64(2)),
 								Name:        "Cate 2.1",
 								Description: "Cate 2.1",
 								Status:      "ACTIVE",

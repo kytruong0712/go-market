@@ -5,14 +5,16 @@ import (
 
 	"github.com/kytruong0712/go-market/product-service/api/internal/model"
 	"github.com/kytruong0712/go-market/product-service/api/internal/repository/category"
+	"github.com/kytruong0712/go-market/product-service/api/internal/utils/ptr"
 )
 
 // GetCategoriesHierarchy gets categories hierarchy
 func (i impl) GetCategoriesHierarchy(ctx context.Context) (model.CategoriesHierarchy, error) {
-	slice, err := i.repo.Category().GetCategories(ctx, category.GetCategoriesInput{
-		LoadImages:          true,
-		LoadNavigationItems: true,
-	})
+	inp := category.GetCategoriesInput{
+		LoadImages:   true,
+		IsNavigation: ptr.ToBoolPtr(true),
+	}
+	slice, err := i.repo.Category().GetCategories(ctx, inp)
 	if err != nil {
 		return model.CategoriesHierarchy{}, err
 	}

@@ -6,3 +6,7 @@
 .vscode
 
 .netrc
+
+product-service/api/c.out
+
+product-service/api/local.env

@@ -17,7 +17,6 @@ const DatabaseName = "postgres"
 func Connect(dbURL string) (*sql.DB, error) {
 	conn, err := sql.Open(DatabaseName, dbURL)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 
 		return nil, pkgerrors.WithStack(fmt.Errorf("connect DB failed. Err: %w", err))

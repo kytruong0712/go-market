@@ -26,7 +26,6 @@ func TestImpl_GetCategoriesHierarchy(t *testing.T) {
 		Code:         "cate-1",
 		Description:  "Cte 1",
 		IsNavigation: true,
-		IsFiltering:  true,
 		Status:       "ACTIVE",
 		Images: []model.CategoryImage{
 			{
@@ -46,7 +45,6 @@ func TestImpl_GetCategoriesHierarchy(t *testing.T) {
 		Code:         "cate-2",
 		Description:  "Cate 2",
 		IsNavigation: true,
-		IsFiltering:  true,
 		Status:       "ACTIVE",
 		Images: []model.CategoryImage{
 			{
@@ -66,7 +64,6 @@ func TestImpl_GetCategoriesHierarchy(t *testing.T) {
 		Code:         "cate-1.1",
 		Description:  "Cate 1.1",
 		IsNavigation: true,
-		IsFiltering:  true,
 		Status:       "ACTIVE",
 	}
 	subCate2 := model.Category{
@@ -76,7 +73,6 @@ func TestImpl_GetCategoriesHierarchy(t *testing.T) {
 		Code:         "cate-2.1",
 		Description:  "Cate 2.1",
 		IsNavigation: true,
-		IsFiltering:  true,
 		Status:       "ACTIVE",
 	}
 	subCate3 := model.Category{
@@ -86,7 +82,6 @@ func TestImpl_GetCategoriesHierarchy(t *testing.T) {
 		Code:         "cate-1.1.1",
 		Description:  "Cate 1.1.1",
 		IsNavigation: true,
-		IsFiltering:  true,
 		Status:       "ACTIVE",
 	}
 

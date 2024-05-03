@@ -30,8 +30,7 @@ type Category struct {
 	CategoryCode  string     `boil:"category_code" json:"category_code" toml:"category_code" yaml:"category_code"`
 	Description   string     `boil:"description" json:"description" toml:"description" yaml:"description"`
 	Status        string     `boil:"status" json:"status" toml:"status" yaml:"status"`
-	IsNavgitation null.Bool  `boil:"is_navgitation" json:"is_navgitation,omitempty" toml:"is_navgitation" yaml:"is_navgitation,omitempty"`
-	IsFiltering   null.Bool  `boil:"is_filtering" json:"is_filtering,omitempty" toml:"is_filtering" yaml:"is_filtering,omitempty"`
+	IsNavgitation bool       `boil:"is_navgitation" json:"is_navgitation" toml:"is_navgitation" yaml:"is_navgitation"`
 	CreatedAt     time.Time  `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt     time.Time  `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
@@ -47,7 +46,6 @@ var CategoryColumns = struct {
 	Description   string
 	Status        string
 	IsNavgitation string
-	IsFiltering   string
 	CreatedAt     string
 	UpdatedAt     string
 }{
@@ -58,7 +56,6 @@ var CategoryColumns = struct {
 	Description:   "description",
 	Status:        "status",
 	IsNavgitation: "is_navgitation",
-	IsFiltering:   "is_filtering",
 	CreatedAt:     "created_at",
 	UpdatedAt:     "updated_at",
 }
@@ -71,7 +68,6 @@ var CategoryTableColumns = struct {
 	Description   string
 	Status        string
 	IsNavgitation string
-	IsFiltering   string
 	CreatedAt     string
 	UpdatedAt     string
 }{
@@ -82,7 +78,6 @@ var CategoryTableColumns = struct {
 	Description:   "categories.description",
 	Status:        "categories.status",
 	IsNavgitation: "categories.is_navgitation",
-	IsFiltering:   "categories.is_filtering",
 	CreatedAt:     "categories.created_at",
 	UpdatedAt:     "categories.updated_at",
 }
@@ -177,29 +172,14 @@ func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
-type whereHelpernull_Bool struct{ field string }
+type whereHelperbool struct{ field string }
 
-func (w whereHelpernull_Bool) EQ(x null.Bool) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, false, x)
-}
-func (w whereHelpernull_Bool) NEQ(x null.Bool) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, true, x)
-}
-func (w whereHelpernull_Bool) LT(x null.Bool) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpernull_Bool) LTE(x null.Bool) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpernull_Bool) GT(x null.Bool) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpernull_Bool) GTE(x null.Bool) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-
-func (w whereHelpernull_Bool) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_Bool) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
 
 type whereHelpertime_Time struct{ field string }
 
@@ -229,8 +209,7 @@ var CategoryWhere = struct {
 	CategoryCode  whereHelperstring
 	Description   whereHelperstring
 	Status        whereHelperstring
-	IsNavgitation whereHelpernull_Bool
-	IsFiltering   whereHelpernull_Bool
+	IsNavgitation whereHelperbool
 	CreatedAt     whereHelpertime_Time
 	UpdatedAt     whereHelpertime_Time
 }{
@@ -240,8 +219,7 @@ var CategoryWhere = struct {
 	CategoryCode:  whereHelperstring{field: "\"categories\".\"category_code\""},
 	Description:   whereHelperstring{field: "\"categories\".\"description\""},
 	Status:        whereHelperstring{field: "\"categories\".\"status\""},
-	IsNavgitation: whereHelpernull_Bool{field: "\"categories\".\"is_navgitation\""},
-	IsFiltering:   whereHelpernull_Bool{field: "\"categories\".\"is_filtering\""},
+	IsNavgitation: whereHelperbool{field: "\"categories\".\"is_navgitation\""},
 	CreatedAt:     whereHelpertime_Time{field: "\"categories\".\"created_at\""},
 	UpdatedAt:     whereHelpertime_Time{field: "\"categories\".\"updated_at\""},
 }
@@ -294,9 +272,9 @@ func (r *categoryR) GetCategoryImages() CategoryImageSlice {
 type categoryL struct{}
 
 var (
-	categoryAllColumns            = []string{"id", "parent_id", "category_name", "category_code", "description", "status", "is_navgitation", "is_filtering", "created_at", "updated_at"}
-	categoryColumnsWithoutDefault = []string{"id", "category_name", "category_code", "description", "status"}
-	categoryColumnsWithDefault    = []string{"parent_id", "is_navgitation", "is_filtering", "created_at", "updated_at"}
+	categoryAllColumns            = []string{"id", "parent_id", "category_name", "category_code", "description", "status", "is_navgitation", "created_at", "updated_at"}
+	categoryColumnsWithoutDefault = []string{"id", "category_name", "category_code", "description", "status", "is_navgitation"}
+	categoryColumnsWithDefault    = []string{"parent_id", "created_at", "updated_at"}
 	categoryPrimaryKeyColumns     = []string{"id"}
 	categoryGeneratedColumns      = []string{}
 )

@@ -3,7 +3,6 @@ package category
 import (
 	"context"
 	"fmt"
-
 	"github.com/kytruong0712/go-market/product-service/api/internal/model"
 	"github.com/kytruong0712/go-market/product-service/api/internal/repository/dbmodel"
 
@@ -14,8 +13,8 @@ import (
 
 // GetCategoriesInput represents input to load
 type GetCategoriesInput struct {
-	LoadImages          bool
-	LoadNavigationItems bool
+	LoadImages   bool
+	IsNavigation *bool
 }
 
 // GetCategories gets category items which available as navigation item
@@ -24,8 +23,8 @@ func (i impl) GetCategories(ctx context.Context, inp GetCategoriesInput) ([]mode
 		dbmodel.CategoryWhere.Status.EQ(model.CategoryStatusActive.String()),
 	}
 
-	if inp.LoadNavigationItems {
-		qms = append(qms, dbmodel.CategoryWhere.IsNavgitation.EQ(null.BoolFrom(true)))
+	if inp.IsNavigation != nil {
+		qms = append(qms, dbmodel.CategoryWhere.IsNavgitation.EQ(*inp.IsNavigation))
 	}
 
 	if inp.LoadImages {
@@ -59,8 +58,7 @@ func toCategoryModel(dbItem *dbmodel.Category) model.Category {
 		Name:         dbItem.CategoryName,
 		Code:         dbItem.CategoryCode,
 		Description:  dbItem.Description,
-		IsNavigation: dbItem.IsNavgitation.Bool,
-		IsFiltering:  dbItem.IsFiltering.Bool,
+		IsNavigation: dbItem.IsNavgitation,
 		CreatedAt:    dbItem.CreatedAt,
 		UpdatedAt:    dbItem.UpdatedAt,
 		Status:       model.CategoryStatus(dbItem.Status),

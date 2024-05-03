@@ -32,7 +32,9 @@ api-gen-mocks:
 
 ## api-test: executes all test cases
 api-test:
-	cd api && sh -c "go test -mod=vendor -coverprofile=c.out -failfast -timeout 5m ./... | grep -v pkg" \
+	cd api; \
+	env $$(cat ./local.env | egrep -v '^#' | xargs) \
+    sh -c 'go test -mod=vendor -coverprofile=c.out -failfast -timeout 5m ./... | grep -v pkg'
 
 ## api-go-generate: executes CLI command to generate go based config to handle graphql
 api-go-generate:

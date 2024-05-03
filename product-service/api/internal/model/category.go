@@ -42,7 +42,6 @@ type Category struct {
 	Code          string
 	Description   string
 	IsNavigation  bool
-	IsFiltering   bool
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	Status        CategoryStatus
