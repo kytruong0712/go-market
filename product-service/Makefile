@@ -22,6 +22,18 @@ api-gen-models:
 	cd api && sh -c 'sqlboiler psql'
 	@echo Done!
 
+## api-gen-models: executes CLI command to generate Mock files
+api-gen-mocks:
+	@echo Starting generate Mock files...
+	cd api && sh -c '\
+		mockery --dir internal/controller --all --recursive --inpackage && \
+		mockery --dir internal/repository --all --recursive --inpackage'
+	@echo Done!
+
+## api-test: executes all test cases
+api-test:
+	cd api && sh -c "go test -mod=vendor -coverprofile=c.out -failfast -timeout 5m ./... | grep -v pkg" \
+
 ## api-go-generate: executes CLI command to generate go based config to handle graphql
 api-go-generate:
 	@echo Starting generate gqlgenerated file...
